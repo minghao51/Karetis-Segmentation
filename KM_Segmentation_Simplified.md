@@ -6,54 +6,54 @@ output:
 ---
 
 
-```{r, echo = FALSE}
-knitr::opts_chunk$set(
-  fig.path = "README_figs/README-"
-)
-```
+
 
 
 # Library
 
 Loading the required libraries, setting overide and seed.
 
-```{r environment, include=FALSE, echo=FALSE}
-# custom function to load/install library
-using<-function(...) {
-  libs<-unlist(list(...))
-  req<-unlist(lapply(libs,require,character.only=TRUE))
-  need<-libs[req==FALSE]
-  n<-length(need)
-  if(n>0){
-    libsmsg<-if(n>2) paste(paste(need[1:(n-1)],collapse=", "),",",sep="") else need[1]
-    print(libsmsg)
-    if(n>1){
-      libsmsg<-paste(libsmsg," and ", need[n],sep="")
-    }
-    libsmsg<-paste("The following packages could not be found: ",libsmsg,"\n\r\n\rInstall missing packages?",collapse="")
-    if(winDialog(type = c("yesno"), libsmsg)=="YES"){       
-      install.packages(need)
-      lapply(need,require,character.only=TRUE)
-    }
-  }
-}
 
-# libraries
-using("data.table","ggplot2","lubridate", "tidyverse", "factoextra","FactoMineR")
-
-# seed to enforce consistent results from algorithm that depends on randomisation
-set.seed(123)
-```
 
 # Data Loading
 
-```{r dataload&head}
 
+```r
 # loading the data
 oncology.profile.dt<-fread(file.path("Data", "OncologyProfile.csv"))
 
 head(oncology.profile.dt)
+```
 
+```
+##    completeObs.SEIN completeObs.POUMON completeObs.GYNECO completeObs.PROSTATE
+## 1:                0                  0                  0                   20
+## 2:               80                  0                 15                    0
+## 3:               31                  8                 12                   10
+## 4:               20                 12                  5                   20
+## 5:                0                  0                  0                    0
+## 6:               15                 11                 11                   11
+##    completeObs.VESSIE completeObs.REIN completeObs.DIGESTIF completeObs.FOIE
+## 1:                 10               10                   60                0
+## 2:                  0                0                    0                0
+## 3:                  1                1                    8                0
+## 4:                  6                6                   25                0
+## 5:                  0                0                    0                0
+## 6:                  4                4                   15                4
+##    completeObs.THYROIDE completeObs.MELANOME completeObs.TETE.ET.COU..ORL
+## 1:                    0                    0                            0
+## 2:                    0                    0                            0
+## 3:                    0                    1                            8
+## 4:                    0                    0                            6
+## 5:                    0                    5                           60
+## 6:                    0                    0                            0
+##    completeObs.AUTRES
+## 1:                  0
+## 2:                  5
+## 3:                  0
+## 4:                  0
+## 5:                 35
+## 6:                  0
 ```
 
 # Data Depiction
@@ -82,14 +82,16 @@ The FactoMineR pakage provided most of the functionality required for the PCA co
 
 **Code and Output**
 
-```{r pca}
+
+```r
 # This would create the approprate graph and factor plot
 # note that this is only partial of the imputed data (withouted the fitted components.)
 
 result.pca<-oncology.profile.dt%>%
   PCA(graph=TRUE)
-
 ```
+
+![](README_figs/README-pca-1.png)<!-- -->![](README_figs/README-pca-2.png)<!-- -->
 
 **Linear composition for the Dim 1 and Dim 2**
 
@@ -97,8 +99,25 @@ The dim 1 and dim 2 of all the records can be acquired by the simple linear comp
 
 In essence, we translated the data into 2D, by rotating to a axes that comprise most of the data variations.
 
-```{r}
+
+```r
 data.frame(result.pca$var$coord)[1:2]
+```
+
+```
+##                                     Dim.1        Dim.2
+## completeObs.SEIN             -0.669445510 -0.532397497
+## completeObs.POUMON           -0.050541286  0.266260775
+## completeObs.GYNECO           -0.431773893 -0.550638808
+## completeObs.PROSTATE          0.431805165 -0.206524603
+## completeObs.VESSIE            0.807663544 -0.227232102
+## completeObs.REIN              0.808481939 -0.226517708
+## completeObs.DIGESTIF          0.311786417 -0.006406552
+## completeObs.FOIE              0.302143750 -0.009099300
+## completeObs.THYROIDE          0.106894891  0.136146237
+## completeObs.MELANOME         -0.017924685  0.207326716
+## completeObs.TETE.ET.COU..ORL -0.227654439  0.584504669
+## completeObs.AUTRES            0.003455631  0.610690416
 ```
 
 
@@ -110,12 +129,22 @@ In python sklearn world, this is also known as Agglomerative Clustering (**sklea
 
 **Code and Output**
 
-```{r hclust}
+
+```r
 # Clustering, auto nb of clusters:
 hc <- HCPC(result.pca, nb.clust=-1,graph=FALSE, order=FALSE)
 plot(hc, choice="tree")
-plot(hc, choice="map")
+```
 
+![](README_figs/README-hclust-1.png)<!-- -->
+
+```r
+plot(hc, choice="map")
+```
+
+![](README_figs/README-hclust-2.png)<!-- -->
+
+```r
 # assigning the cluster's onto the raw data frame
 oncology.profile.dt$cluster <-hc$data.clust$clust
 ```
@@ -209,9 +238,19 @@ In which, we would acquire the lambda values if we were to solve the equation fo
 
 Let's start with something easier to follow and understands - 5 Students Scores among subjects of Math, English and Art.
 
-```{r student_example}
+
+```r
 student.dt<-data.frame(student =1:5, math = c(90,60,90,60,30),english = c(60, 90,60 ,60 ,30), art = c(90,30,60,90,30))
 student.dt
+```
+
+```
+##   student math english art
+## 1       1   90      60  90
+## 2       2   60      90  30
+## 3       3   90      60  60
+## 4       4   60      60  90
+## 5       5   30      30  30
 ```
 
 Thus, the matrix of the data would be 
@@ -237,7 +276,8 @@ $$
 
 It follows that, the covariance of the scores among the three variables are
 
-```{r}
+
+```r
 # data.frame(cov((student.dt[2:4])))
 ```
 
@@ -288,7 +328,7 @@ Then, it repeatedly executes the following two steps (until all the clusters are
 
 Finally, decide where to cut the hierarchical clusters to define the number of segments
 
-**Distance Options**
+**Options**
 
 There are a few ways to determine how close two clusters are:
 
@@ -304,9 +344,7 @@ The distance calculation between points can also vary, while typically for numer
 
 
 
-```{r}
 
-```
 
 # References
 
