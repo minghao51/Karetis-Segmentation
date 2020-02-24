@@ -8,6 +8,7 @@ output:
 
 
 
+Please run the cell the in order listed in the notebook
 
 # Library
 
@@ -328,7 +329,7 @@ Then, it repeatedly executes the following two steps (until all the clusters are
 
 Finally, decide where to cut the hierarchical clusters to define the number of segments
 
-**Options**
+**Distance Options**
 
 There are a few ways to determine how close two clusters are:
 
