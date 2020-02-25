@@ -136,6 +136,7 @@ fwrite(oncology.profile.dt, file.path("Output", "OncologyProfileCluster.csv"))
 
 ```{r}
 # Clustering,  with mininum suggestion of 5 clusters.
+# with rstudio, you can simply highlight the functions and hit F1 on your keyboard, the documentation for the corresponding function would then be shown on your right ( along with the options, methods, etc)
 hc <- HCPC(result.pca, nb.clust=-1,graph=FALSE, order=FALSE, min=5)
 plot(hc, choice="tree")
 plot(hc, choice="map")
