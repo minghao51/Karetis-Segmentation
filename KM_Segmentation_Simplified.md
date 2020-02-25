@@ -86,7 +86,7 @@ The FactoMineR pakage provided most of the functionality required for the PCA co
 
 ```r
 # This would create the approprate graph and factor plot
-# note that this is only partial of the imputed data (withouted the fitted components.)
+# note that this is only partial of the imputed data.
 
 result.pca<-oncology.profile.dt%>%
   PCA(graph=TRUE)
@@ -153,6 +153,49 @@ oncology.profile.dt$cluster <-hc$data.clust$clust
 In the dendrogram plot of clustering, the horizontal units are individual instances, while the vertical axes represent a proxy of linkage distance (distance between clusters). The number of clusters requires can be set by modifying at which point we would cut off the dendrogram.
 
 There are various ways to proceed here, one could attempt to explain the individual factor components of Dim 1 and Dim 2, then use the above plots to illustrate the meaning behind Dim 1 and Dim 2. An alternative method would be to take the results of all these dimensional reduction and clustering onto the raw data. 
+
+
+
+
+```r
+# to write the result onto a local file
+fwrite(oncology.profile.dt, file.path("Output", "OncologyProfileCluster.csv"))
+```
+
+## Clustering with different number of clusters
+
+
+```r
+# Clustering,  with mininum suggestion of 5 clusters.
+# with rstudio, you can simply highlight the functions and hit F1 on your keyboard, the documentation for the corresponding function would then be shown on your right ( along with the options, methods, etc)
+hc <- HCPC(result.pca, nb.clust=-1,graph=FALSE, order=FALSE, min=5)
+plot(hc, choice="tree")
+```
+
+![](README_figs/README-unnamed-chunk-3-1.png)<!-- -->
+
+```r
+plot(hc, choice="map")
+```
+
+![](README_figs/README-unnamed-chunk-3-2.png)<!-- -->
+
+## Clustering with different number of clusters, metrics and method
+
+
+```r
+# Clustering, with mininum suggestion of 5 clusters, and metrics as manhattan, and distance calculation as ward:
+hc <- HCPC(result.pca, nb.clust=-1,graph=FALSE, order=FALSE, min=5, method="ward", metric="manhattan")
+plot(hc, choice="tree")
+```
+
+![](README_figs/README-unnamed-chunk-4-1.png)<!-- -->
+
+```r
+plot(hc, choice="map")
+```
+
+![](README_figs/README-unnamed-chunk-4-2.png)<!-- -->
 
 
 # Mathematics
