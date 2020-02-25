@@ -127,7 +127,8 @@ There are various ways to proceed here, one could attempt to explain the individ
 
 
 
-```{r hclust}
+```{r hclust_output}
+# to write the result onto a local file
 fwrite(oncology.profile.dt, file.path("Output", "OncologyProfileCluster.csv"))
 
 ```
