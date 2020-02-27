@@ -1,9 +1,18 @@
 ---
 title: "R Notebook"
 output: 
-  html_document:
+    prettydoc::html_pretty:
+    theme: leonids
+    highlight: github
     keep_md: true
 ---
+
+
+<style>
+p.caption {
+  font-size: 0.6em;
+}
+</style>
 
 
 ```{r, echo = FALSE}
@@ -12,7 +21,9 @@ knitr::opts_chunk$set(
 )
 ```
 
-Please run the cell the in order listed in the notebook
+Please run the cell the in order listed in the notebook.
+
+The rmd is meant to be used a introduction to ML segmentation based on document": **202002_ML training Segmentation.ppt**
 
 # Library
 
@@ -48,23 +59,37 @@ set.seed(123)
 
 # Data Loading
 
-```{r dataload&head}
+```{r dataload&head, result="asis"}
 
 # loading the data
+# note that this assumes that the whole github repo is download with the original structure
 oncology.profile.dt<-fread(file.path("Data", "OncologyProfile.csv"))
 
+# printing here, although this isn't very friendly for html
 head(oncology.profile.dt)
+
+# stargazer::stargazer(head(oncology.profile.dt), type = "html",
+#  title = "Table with patient oncology profile")
+
 
 ```
 
-# Data Depiction
 
+___
 
-# PCA
+# Techniques
+# PCA - Dimensional Reduction
 
-The FactoMineR pakage provided most of the functionality required for the PCA computation (such as the numerical calculation and also plotting) here for PCA.
+> The FactoMineR pakage provided most of the functionality required for the PCA computation (such as the numerical calculation and also plotting) here for PCA.
 
-**In practice**
+**Defination**: Deconstructing the data into lesser dimension (for instance going from a 12-variable description to a 2D description) for synthetic comprehension and visualization.
+
+**In Practice**
+- It finds the Principal Components of data, going from a N-dimensional description (N can be quite large) to a smaller dimension world that is easier to comprehend
+- It assumes that a large variance in data offers more information, and vice versa
+- The data is thus deconstructable through orthogonal-linear composition of the original dimension
+
+**Logic**
 
 1. Choose active variables
 
@@ -80,12 +105,9 @@ The FactoMineR pakage provided most of the functionality required for the PCA co
 
 7. Go back to raw data for interpretation
 
-
-**Code and Output**
-
 ```{r pca}
 # This would create the approprate graph and factor plot
-# note that this is only partial of the imputed data.
+# note that this is only partial of the imputed data (withouted the fitted components.)
 
 result.pca<-oncology.profile.dt%>%
   PCA(graph=TRUE)
@@ -102,14 +124,21 @@ In essence, we translated the data into 2D, by rotating to a axes that comprise 
 data.frame(result.pca$var$coord)[1:2]
 ```
 
+___
 
-# Hierarchy clustering
+# Hierarchy clustering - Clustering
 
 In python sklearn world, this is also known as Agglomerative Clustering (**sklearn.cluster.AgglomerativeClustering**), it is however, more well known as **hclust** function from R **stats** library. In this case, I am using a higher level library - **FactoMineR** ( which provides additional plotting, anaylsis functionalities)
 
 **Defination**: Recursively merges the pair of clusters that minimally increases a given linkage distance.
 
-**Code and Output**
+**Methods**:
+- It starts by treating each observation as a separate cluster
+- Then, it repeatedly executes the following two steps (until all the clusters are merged together)
+    1. Identify the two clusters that are closest together 
+    2. Merge the two most similar clusters
+- Finally, decide where to make the cut in the hierarchical clusters to define a nb. of segments
+
 
 ```{r hclust}
 # Clustering, auto nb of clusters:
@@ -125,45 +154,19 @@ In the dendrogram plot of clustering, the horizontal units are individual instan
 
 There are various ways to proceed here, one could attempt to explain the individual factor components of Dim 1 and Dim 2, then use the above plots to illustrate the meaning behind Dim 1 and Dim 2. An alternative method would be to take the results of all these dimensional reduction and clustering onto the raw data. 
 
-
-
-```{r hclust_output}
-# to write the result onto a local file
-fwrite(oncology.profile.dt, file.path("Output", "OncologyProfileCluster.csv"))
-
-```
-
-## Clustering with different number of clusters
-
-```{r}
-# Clustering,  with mininum suggestion of 5 clusters.
-# with rstudio, you can simply highlight the functions and hit F1 on your keyboard, the documentation for the corresponding function would then be shown on your right ( along with the options, methods, etc)
-hc <- HCPC(result.pca, nb.clust=-1,graph=FALSE, order=FALSE, min=5)
-plot(hc, choice="tree")
-plot(hc, choice="map")
-```
-
-## Clustering with different number of clusters, metrics and method
-
-```{r}
-# Clustering, with mininum suggestion of 5 clusters, and metrics as manhattan, and distance calculation as ward:
-hc <- HCPC(result.pca, nb.clust=-1,graph=FALSE, order=FALSE, min=5, method="ward", metric="manhattan")
-plot(hc, choice="tree")
-plot(hc, choice="map")
-```
-
+___
 
 # Mathematics
 ## PCA
 
-PCA can be thought of as an unsupervised learning problem, this is an analysis method that can be done with numerous methods. One of the more intuitive methods would be through eigen-decomposition. The whole process of obtaining principle components from a raw dataset can be simplified in 4 parts :
+PCA is an analysis method that can be done with numerous methods - One of the more intuitive methods would be through eigen-decomposition. The whole process of obtaining principle components from a raw dataset can be simplified in 4 parts :
 
 - Compute the covariance matrix of the whole dataset.
 - Compute eigenvectors and the corresponding eigenvalues.
 - Sort the eigenvectors by decreasing eigenvalues and choose k eigenvectors with the largest eigenvalues to form a d × k dimensional matrix W.
 - Use this d × k eigenvector matrix to transform the samples onto the new subspace.
 
-This is not the only way, similar (not identical) linear decomposition of the data can be done by singular value decomposition (SVD), which is perhaps more simplified numerically (for the mathematically inclined).
+> This is not the only way, similar (not identical) linear decomposition of the data can be done by singular value decomposition (SVD), which is perhaps more simplified numerically (for the mathematically inclined).
 
 
 
@@ -316,6 +319,15 @@ Then, it repeatedly executes the following two steps (until all the clusters are
 
 Finally, decide where to cut the hierarchical clusters to define the number of segments
 
+
+```{r hclust_process, echo=FALSE, fig.cap="Figure (1) -Process of hclust", out.width = '40%'}
+knitr::include_graphics("https://github.com/minghao51/Karetis-Segmentation/blob/master/Images/hclust_Process.png?raw=true")
+
+
+```
+
+
+
 **Distance Options**
 
 There are a few ways to determine how close two clusters are:
@@ -328,13 +340,16 @@ There are a few ways to determine how close two clusters are:
 Complete linkage and mean linkage clustering are the ones used most often.
 
 
+```{r hclust_distance, echo=FALSE, fig.cap="Figure (2) - hclust distance option", out.width = '50%'}
+knitr::include_graphics("https://github.com/minghao51/Karetis-Segmentation/blob/master/Images/hclust_Distance.png?raw=true")
+
+
+```
+
+
 The distance calculation between points can also vary, while typically for numerical values we default to *euclidean*, *manhattan* is at times use for categorical values.
 
 
-
-```{r}
-
-```
 
 # References
 
@@ -343,3 +358,12 @@ The distance calculation between points can also vary, while typically for numer
 2. https://medium.com/@aptrishu/understanding-principle-component-analysis-e32be0253ef0
 
 3. https://www.datacamp.com/community/tutorials/hierarchical-clustering-R
+
+
+# Apendices
+
+Below listed some  fo the more popular alternative algorithm for the techniques described.
+
+1. **Dimension reduction techniques** – such as PCA, MDS, tsne…
+2. **Clustering technique** – such as hclust, kmeans, kmedoids…
+
