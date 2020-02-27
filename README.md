@@ -2,14 +2,14 @@
 
 **Objective**
 
-This repo is meant to provide supporting codes, algorithm setup, notebook for the introduction slides on Machine Learning : Segmentation. (To be linked). Please go throught the document for the context. 
+This repo is meant to provide supporting codes, algorithm setup, notebook for the introduction slides on Machine Learning : Segmentation. (To be linked). Please go throught the document for the context of ML segmentation. 
 
 **Preview**
 
-The rendered Rnotebook can be viewed online (through browser) with the following link.
-[Rendered KM_Segmentation.html](https://htmlpreview.github.io/?https://github.com/minghao51/Karetis-Segmentation/blob/master/KM_Segmentation_Simplified.html)
+The rendered Rnotebook can be viewed online (through browser) with the following link
+[Rendered KM_Segmentation.html](https://htmlpreview.github.io/?https://github.com/minghao51/Karetis-Segmentation/blob/master/KM_Segmentation_Simplified.html).
 
-Do note that it may be more optimal to download the whole repo and extract locally. As all the required R codes can all be found in the [.Rmd file](https://github.com/minghao51/Karetis-Segmentation/blob/master/KM_Segmentation_Simplified.Rmd).
+Do note that the whole repo can be downloaded and run locally, all the required R codes can all be found in the [.Rmd file](https://github.com/minghao51/Karetis-Segmentation/blob/master/KM_Segmentation_Simplified.Rmd). This may be the best route if the intention is to test the algorithm/techniques on custom data.
 
 **Highlights**
 
