@@ -1,9 +1,11 @@
 # Karetis-Segmentation
 
 **Objective**
+
 This repo is meant to provide supporting codes, algorithm setup, notebook for the introduction slides on Machine Learning : Segmentation. (To be linked). Please go throught the document for the context. 
 
 **Preview**
+
 The rendered Rnotebook can be viewed online (through browser) with the following link.
 [Rendered KM_Segmentation.html](https://htmlpreview.github.io/?https://github.com/minghao51/Karetis-Segmentation/blob/master/KM_Segmentation_Simplified.html)
 
