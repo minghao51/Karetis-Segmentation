@@ -1,5 +1,12 @@
 # Karetis-Segmentation
-Please download the whole repo and extract it somewhere locally.
+
+**Preview**
+The rendered Rnotebook can be viewed online (through browser) with the following link.
+[Rendered KM_Segmentation.html](https://htmlpreview.github.io/?https://github.com/minghao51/Karetis-Segmentation/blob/master/KM_Segmentation_Simplified.html)
+
+Do note that it may be more optimal to download the whole repo and extract locally. As all the required R codes can all be found in the [.Rmd file](https://github.com/minghao51/Karetis-Segmentation/blob/master/KM_Segmentation_Simplified.Rmd).
+
+**Highlights**
 
 - The sample data can be found in the \Data folder
 - The codes can be found in the KM_Segmentation_Simplified.Rmd file (please use Rstudio to open it)
