@@ -107,7 +107,7 @@ ___
 
 ```{r pca}
 # This would create the approprate graph and factor plot
-# note that this is only partial of the imputed data (withouted the fitted components.)
+# note that this is only partial of the imputed data
 
 result.pca<-oncology.profile.dt%>%
   PCA(graph=TRUE)
@@ -133,10 +133,15 @@ In python sklearn world, this is also known as Agglomerative Clustering (**sklea
 **Defination**: Recursively merges the pair of clusters that minimally increases a given linkage distance.
 
 **Methods**:
+
 - It starts by treating each observation as a separate cluster
+
 - Then, it repeatedly executes the following two steps (until all the clusters are merged together)
+
     1. Identify the two clusters that are closest together 
+    
     2. Merge the two most similar clusters
+    
 - Finally, decide where to make the cut in the hierarchical clusters to define a nb. of segments
 
 
@@ -146,13 +151,47 @@ hc <- HCPC(result.pca, nb.clust=-1,graph=FALSE, order=FALSE)
 plot(hc, choice="tree")
 plot(hc, choice="map")
 
-# assigning the cluster's onto the raw data frame
-oncology.profile.dt$cluster <-hc$data.clust$clust
 ```
 
 In the dendrogram plot of clustering, the horizontal units are individual instances, while the vertical axes represent a proxy of linkage distance (distance between clusters). The number of clusters requires can be set by modifying at which point we would cut off the dendrogram.
 
 There are various ways to proceed here, one could attempt to explain the individual factor components of Dim 1 and Dim 2, then use the above plots to illustrate the meaning behind Dim 1 and Dim 2. An alternative method would be to take the results of all these dimensional reduction and clustering onto the raw data. 
+
+# Hierarchy clustering - Clustering with specific number of segments
+
+```{r}
+# Clustering,  with mininum suggestion of 5 clusters.
+# with rstudio, you can simply highlight the functions and hit F1 on your keyboard, the documentation for the corresponding function would then be shown on your right ( along with the options, methods, etc)
+hc <- HCPC(result.pca, nb.clust=-1,graph=FALSE, order=FALSE, min=5)
+plot(hc, choice="tree")
+plot(hc, choice="map")
+```
+
+
+
+# Hierarchy clustering - Clustering with different number of clusters, metrics and method
+
+```{r}
+# Clustering, with mininum suggestion of 5 clusters, and metrics as manhattan, and distance calculation as ward:
+hc <- HCPC(result.pca, nb.clust=-1,graph=FALSE, order=FALSE, min=5, method="ward", metric="manhattan")
+plot(hc, choice="tree")
+plot(hc, choice="map")
+```
+
+
+# Output
+
+Code chunk for csv output with the result from the segmentation.
+
+```{r hclust_output}
+
+# assigning the cluster's onto the raw data frame
+oncology.profile.dt$cluster <-hc$data.clust$clust
+
+# to write the result onto a local file
+fwrite(oncology.profile.dt, file.path("Output", "OncologyProfileCluster.csv"))
+```
+
 
 ___
 
