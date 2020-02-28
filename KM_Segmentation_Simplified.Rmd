@@ -1,5 +1,5 @@
 ---
-title: "R Notebook"
+title: "Segmentation"
 output: 
     prettydoc::html_pretty:
     theme: leonids
@@ -23,11 +23,11 @@ knitr::opts_chunk$set(
 
 Please run the cell the in order listed in the notebook.
 
-The rmd is meant to be used a introduction to ML segmentation based on document": **202002_ML training Segmentation.ppt**
+The rmd is meant to be used as an introduction to ML segmentation based on document": **202002_ML training Segmentation.ppt**
 
 # Library
 
-Loading the required libraries, setting overide and seed.
+Loading the required libraries, setting override and seed.
 
 ```{r environment, include=FALSE, echo=FALSE}
 # custom function to load/install library
@@ -62,7 +62,7 @@ set.seed(123)
 ```{r dataload&head, result="asis"}
 
 # loading the data
-# note that this assumes that the whole github repo is download with the original structure
+# note that this assumes that the whole github repo is downloaded with the original structure
 oncology.profile.dt<-fread(file.path("Data", "OncologyProfile.csv"))
 
 # printing here, although this isn't very friendly for html
@@ -80,9 +80,9 @@ ___
 # Techniques
 # PCA - Dimensional Reduction
 
-> The FactoMineR pakage provided most of the functionality required for the PCA computation (such as the numerical calculation and also plotting) here for PCA.
+> The FactoMineR package provided most of the functionality required for the PCA computation (such as the numerical calculation and also plotting) here for PCA.
 
-**Defination**: Deconstructing the data into lesser dimension (for instance going from a 12-variable description to a 2D description) for synthetic comprehension and visualization.
+**Definition**: Deconstructing the data into lesser dimension (for instance going from a 12-variable description to a 2D description) for synthetic comprehension and visualization.
 
 **In Practice**
 - It finds the Principal Components of data, going from a N-dimensional description (N can be quite large) to a smaller dimension world that is easier to comprehend
@@ -99,7 +99,7 @@ ___
 
 4. Choose the number of dimensions to interpret
 
-5. Joint analysis of the cloud of individuals and the cloud of variables
+5. Analyze jointly the cloud of individuals and the cloud of variables
 
 6. Use indicators to enrich interpretation
 
@@ -118,7 +118,7 @@ result.pca<-oncology.profile.dt%>%
 
 The dim 1 and dim 2 of all the records can be acquired by the simple linear composition of the following values (eigenvectors). It is through such values that we acquire the individual factor map (PCA) depicted above for all records.
 
-In essence, we translated the data into 2D, by rotating to a axes that comprise most of the data variations.
+In essence, we have translated the data into 2D, by rotating to axes that comprise most of the data variations.
 
 ```{r}
 data.frame(result.pca$var$coord)[1:2]
@@ -128,9 +128,9 @@ ___
 
 # Hierarchy clustering - Clustering
 
-In python sklearn world, this is also known as Agglomerative Clustering (**sklearn.cluster.AgglomerativeClustering**), it is however, more well known as **hclust** function from R **stats** library. In this case, I am using a higher level library - **FactoMineR** ( which provides additional plotting, anaylsis functionalities)
+In python sklearn world, this is also known as Agglomerative Clustering (**sklearn.cluster.AgglomerativeClustering**). It is more well-known as the **hclust** function from R **stats** library. In this case, we will be using a higher level library - **FactoMineR** (which provides additional plotting & anaylsis functionalities)
 
-**Defination**: Recursively merges the pair of clusters that minimally increases a given linkage distance.
+**Definition**: Recursively merges the pair of clusters that minimally increases a given linkage distance.
 
 **Methods**:
 
@@ -153,7 +153,7 @@ plot(hc, choice="map")
 
 ```
 
-In the dendrogram plot of clustering, the horizontal units are individual instances, while the vertical axes represent a proxy of linkage distance (distance between clusters). The number of clusters requires can be set by modifying at which point we would cut off the dendrogram.
+In the dendrogram plot of clustering, the horizontal units are individual instances, while the vertical axis represents a proxy of linkage distance (distance between clusters). The number of clusters can be set by modifying at which point we would cut off the dendrogram.
 
 There are various ways to proceed here, one could attempt to explain the individual factor components of Dim 1 and Dim 2, then use the above plots to illustrate the meaning behind Dim 1 and Dim 2. An alternative method would be to take the results of all these dimensional reduction and clustering onto the raw data. 
 
@@ -161,7 +161,7 @@ There are various ways to proceed here, one could attempt to explain the individ
 
 ```{r}
 # Clustering,  with mininum suggestion of 5 clusters.
-# with rstudio, you can simply highlight the functions and hit F1 on your keyboard, the documentation for the corresponding function would then be shown on your right ( along with the options, methods, etc)
+# With rstudio, you can simply highlight the functions and hit F1 on your keyboard, the documentation for the corresponding function would then be shown on your right ( along with the options, methods, etc)
 hc <- HCPC(result.pca, nb.clust=-1,graph=FALSE, order=FALSE, min=5)
 plot(hc, choice="tree")
 plot(hc, choice="map")
@@ -169,10 +169,10 @@ plot(hc, choice="map")
 
 
 
-# Hierarchy clustering - Clustering with different number of clusters, metrics and method
+# Hierarchy clustering - Clustering with different nb. of clusters, metrics and methods
 
 ```{r}
-# Clustering, with mininum suggestion of 5 clusters, and metrics as manhattan, and distance calculation as ward:
+# Clustering with suggestion of 5+ clusters, metrics as manhattan, and distance calculation as ward:
 hc <- HCPC(result.pca, nb.clust=-1,graph=FALSE, order=FALSE, min=5, method="ward", metric="manhattan")
 plot(hc, choice="tree")
 plot(hc, choice="map")
@@ -185,10 +185,10 @@ Code chunk for csv output with the result from the segmentation.
 
 ```{r hclust_output}
 
-# assigning the cluster's onto the raw data frame
+# assigning the clusters onto the raw data frame
 oncology.profile.dt$cluster <-hc$data.clust$clust
 
-# to write the result onto a local file
+# writing the results onto a local file
 fwrite(oncology.profile.dt, file.path("Output", "OncologyProfileCluster.csv"))
 ```
 
@@ -198,22 +198,22 @@ ___
 # Mathematics
 ## PCA
 
-PCA is an analysis method that can be done with numerous methods - One of the more intuitive methods would be through eigen-decomposition. The whole process of obtaining principle components from a raw dataset can be simplified in 4 parts :
+PCA is an analysis method that can be done with numerous methods. One of the more intuitive methods would be through eigen-decomposition. The whole process of obtaining principle components from a raw dataset can be simplified in 4 steps:
 
 - Compute the covariance matrix of the whole dataset.
 - Compute eigenvectors and the corresponding eigenvalues.
 - Sort the eigenvectors by decreasing eigenvalues and choose k eigenvectors with the largest eigenvalues to form a d × k dimensional matrix W.
 - Use this d × k eigenvector matrix to transform the samples onto the new subspace.
 
-> This is not the only way, similar (not identical) linear decomposition of the data can be done by singular value decomposition (SVD), which is perhaps more simplified numerically (for the mathematically inclined).
+> This is not the only way, similar linear decomposition of the data can be done by singular value decomposition (SVD), which is perhaps more simple numerically (for the mathematically inclined).
 
 
 
 ### Covariance
 
-**Disclaimer** : Generally, it is important that the data is scaled (normalised) beforehand, otherwise instead of covariance, it will be based on correlation instead (which is the intention for the patient profile here).
+**Disclaimer**: Generally, it is important that the data is scaled (normalised) beforehand. Otherwise, it will be based on correlation (which is the intention for the patient profile here).
 
-**Definition** : The measure of the extent to which corresponding elements from two sets of ordered data move in the same direction. The formula is shown below denoted by cov(x,y) as the covariance of x and y.
+**Definition**: Covariance is the measure of the extent to which corresponding elements from two sets of ordered data move in the same direction. The formula is shown below denoted by cov(x,y) as the covariance of x and y.
 
 $$
 cov(x,y) = \frac{\sum (x_i-\hat{x})(y_i - \hat{y})}{N}
@@ -229,7 +229,7 @@ Cov(z,x) , Cov(z,y), Cov(z,z)
 \end{bmatrix}
 $$
 
-Since the covariance of a variable with itself is its variance (Cov(a,a)=Var(a)), in the main diagonal (Top left to bottom right), we actually have the variances of each initial variable. And since the covariance is commutative (Cov(a,b)=Cov(b,a)), the entries of the covariance matrix are symmetric with respect to the main diagonal, which means that the upper and the lower triangular portions are equal.
+Since the covariance of a variable with itself is its variance (Cov(a,a)=Var(a)), in the diagonal (top left to bottom right), we actually have the variances of each initial variable. Since the covariance is commutative (Cov(a,b)=Cov(b,a)), the entries of the covariance matrix are symmetric with respect to the main diagonal, which means that the upper and the lower triangular portions are equal.
 
 The relationship can thus be simplified to:
 
@@ -246,14 +246,14 @@ $$
 
 It’s the sign of the covariance that matters :
 
-- if positive then : the two variables increase or decrease together (correlated)
-- if negative then : One increases when the other decreases (Inversely correlated)
+-if positive, then the two variables increase or decrease together (correlated)
+-if negative, then one increases when the other decreases (inversely correlated)
 
-Now, that we know that the covariance matrix is not more than a table that summaries the correlations between all the possible pairs of variables, let’s move to the next step.
+Now that we know that the covariance matrix is nothing more than a table that summarizes correlations between all possible pairs of variables, let’s move on to the next step.
 
 ### Eigenvectors
 
-Eigenvectors and eigenvalues are the linear algebra concepts that we need to compute from the covariance matrix in order to determine the principal components of the data. They are simply mathematically transformation that would allow us to express the 
+Eigenvectors and eigenvalues are the elements we need to compute from the covariance matrix in order to determine the principal components of the data. Some simple linear algebra transformations allow us to calculate them.
 
 ***Intuitively, an eigenvector is a vector whose direction remains unchanged when a linear transformation is applied to it.***
 
@@ -273,18 +273,18 @@ $$
 det(A-\lambda I) = 0
 $$
 
-In which, we would acquire the lambda values if we were to solve the equation for $\lambda$.
+The eigenvalues are then obtained as the solutions of the equation for $\lambda$.
 
 ### Simple Example - student scores
 
-Let's start with something easier to follow and understands - 5 Students Scores among subjects of Math, English and Art.
+Let's start with an easy example - 5 students' scores for 3 exams: Math, English and Art.
 
 ```{r student_example}
 student.dt<-data.frame(student =1:5, math = c(90,60,90,60,30),english = c(60, 90,60 ,60 ,30), art = c(90,30,60,90,30))
 student.dt
 ```
 
-Thus, the matrix of the data would be 
+The matrix of the data is 
 
 $$
 A = \begin{bmatrix}
@@ -296,7 +296,7 @@ A = \begin{bmatrix}
 \end{bmatrix}
 $$
 
-In which case, the mean fo the matrix $\tilde{A}$ would be
+From this data, the mean for the matrix $\tilde{A}$ is
 
 
 $$
@@ -305,10 +305,10 @@ $$
 \end{bmatrix}
 $$
 
-It follows that, the covariance of the scores among the three variables are
+The covariance matrix of scores among the 3 variables is
 
 ```{r}
-# data.frame(cov((student.dt[2:4])))
+# data.frame(cov((student.dt[1:5])))
 ```
 
 $$
@@ -320,7 +320,7 @@ Cov({A}) =
 \end{bmatrix}
 $$
 
-For Eigenvalues/vector decomposition, we would thus acquire
+For eigenvalues/vector decomposition, we would thus solve
 
 
 $$
@@ -336,21 +336,21 @@ $$
 \end{pmatrix}
 $$
 
-If we were to decompose it, we would acquire
+Meaning the eigenvalues are the solutions of the following equation for $\lambda$:
 
 $$
 -\lambda^3 + 1584 \lambda^2 - 641520\lambda +25660800 = 0
 $$
 
-From which we can solve for the possibles values for $\lambda$ - eigenvalues.
+
 
 # Hierarchical Clustering
 
 **Methods** (for bottom-up approach):
 
-It starts by treating each observation as a separate cluster 
+It starts by treating each observation as a separate cluster.
 
-Then, it repeatedly executes the following two steps (until all the clusters are merged)
+Then, it repeatedly executes the following two steps (until all the clusters are merged):
 
 1. Identify the two clusters that are closest together 
 
@@ -376,7 +376,7 @@ There are a few ways to determine how close two clusters are:
 - **Mean linkage clustering**: Find all possible pairwise distances for points belonging to two different clusters and then calculate the average.
 - **Centroid linkage clustering**: Find the centroid of each cluster and calculate the distance between centroids of two clusters.
 
-Complete linkage and mean linkage clustering are the ones used most often.
+Complete linkage and mean linkage clustering are most frequently used.
 
 
 ```{r hclust_distance, echo=FALSE, fig.cap="Figure (2) - hclust distance option", out.width = '50%'}
@@ -386,18 +386,16 @@ knitr::include_graphics("https://github.com/minghao51/Karetis-Segmentation/blob/
 ```
 
 
-The distance calculation between points can also vary, while typically for numerical values we default to *euclidean*, *manhattan* is at times use for categorical values.
-
+The method for distance calculation between points can also be chosen among a variety of options. For numerical values we use *euclidean* by default. *Manhattan* is at times use for categorical values.
 
 
 # References
 
-1. https://towardsdatascience.com/the-mathematics-behind-principal-component-analysis-fff2d7f4b643
+1. [PCA mathematical explanation](https://towardsdatascience.com/the-mathematics-behind-principal-component-analysis-fff2d7f4b643)
 
-2. https://medium.com/@aptrishu/understanding-principle-component-analysis-e32be0253ef0
+2. [PCA background information](https://medium.com/@aptrishu/understanding-principle-component-analysis-e32be0253ef0)
 
-3. https://www.datacamp.com/community/tutorials/hierarchical-clustering-R
-
+3. [Hierachy Clustering](https://www.datacamp.com/community/tutorials/hierarchical-clustering-R)
 
 # Apendices
 
