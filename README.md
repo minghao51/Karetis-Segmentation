@@ -15,8 +15,8 @@ Do note that the whole repo can be downloaded and run locally, all the required 
 - Data Loading
 - PCA
 - Hclust
-![fig0](Images\hclust.png)
-![fig1](Images\factor_map.png)
+![fig0](Images/hclust.png)
+![fig1](Images/factor_map.png)
 
 # Highlights
 
